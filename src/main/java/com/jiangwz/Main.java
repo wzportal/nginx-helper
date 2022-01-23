@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 修改nginx.conf文件，查找upstream,
+ */
 public class Main {
 
     public static void main(String[] args) {
@@ -66,10 +69,11 @@ public class Main {
             if (line.trim().startsWith("upstream ") && line.contains(param.getUpstream())) {
                 lines2.add(line);
                 start = true;
+                blankNum = line.indexOf("upstream");
                 continue;
             }
             if (start && param.getOn() != null && line.trim().contains("server ") && line.contains(param.getOn())) {
-                lines2.add(line.substring(line.indexOf("server")));
+                lines2.add(space(blankNum + 4) + line.substring(line.indexOf("server")));
                 continue;
             }
             if (start && param.getOff() != null && line.trim().contains("server ") && line.contains(param.getOff())) {
@@ -102,5 +106,13 @@ public class Main {
             System.exit(1);
         }
         System.out.println("success");
+    }
+
+    private static String space(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }
